@@ -1,0 +1,111 @@
+/* eslint-env jest */
+
+const {
+  _decodeFloat,
+  _getExactDecimal,
+  parse,
+  stringify
+} = require('.')
+
+describe('precise-number', () => {
+  describe('_decodeFloat', () => {
+    it('extracts 1 correctly', () => {
+      expect(_decodeFloat(1)).toEqual({ exponent: 0b01111111111, mantissa: 0b0000000000000000000000000000000000000000000000000000 })
+    })
+
+    it('handles decimals near 1 correctly', () => {
+      expect(_decodeFloat(1.0000000000000002)).toEqual({ exponent: 0b01111111111, mantissa: 0b0000000000000000000000000000000000000000000000000001 })
+      expect(_decodeFloat(1.0000000000000004)).toEqual({ exponent: 0b01111111111, mantissa: 0b0000000000000000000000000000000000000000000000000010 })
+    })
+
+    it('handles 2', () => {
+      expect(_decodeFloat(2)).toEqual({ exponent: 0b10000000000, mantissa: 0b0000000000000000000000000000000000000000000000000000 })
+      expect(_decodeFloat(-2)).toEqual({ exponent: 0b10000000000, mantissa: 0b0000000000000000000000000000000000000000000000000000 })
+    })
+
+    it('handles 1/3', () => {
+      expect(_decodeFloat(1 / 3)).toEqual({ exponent: 0b01111111101, mantissa: 0b0101010101010101010101010101010101010101010101010101 })
+    })
+
+    it('handles pi', () => {
+      expect(_decodeFloat(Math.PI)).toEqual({ exponent: 0b10000000000, mantissa: 0b1001001000011111101101010100010001000010110100011000 })
+    })
+
+    it('handles everything else', () => {
+      expect(_decodeFloat(3)).toEqual({ exponent: 0b10000000000, mantissa: 0b1000000000000000000000000000000000000000000000000000 })
+      expect(_decodeFloat(4)).toEqual({ exponent: 0b10000000001, mantissa: 0b0000000000000000000000000000000000000000000000000000 })
+      expect(_decodeFloat(5)).toEqual({ exponent: 0b10000000001, mantissa: 0b0100000000000000000000000000000000000000000000000000 })
+      expect(_decodeFloat(6)).toEqual({ exponent: 0b10000000001, mantissa: 0b1000000000000000000000000000000000000000000000000000 })
+      expect(_decodeFloat(23)).toEqual({ exponent: 0b10000000011, mantissa: 0b0111000000000000000000000000000000000000000000000000 })
+      expect(_decodeFloat(Number.MIN_VALUE)).toEqual({ exponent: 0b00000000000, mantissa: 0b0000000000000000000000000000000000000000000000000001 })
+      expect(_decodeFloat(2.2250738585072009e-308)).toEqual({ exponent: 0b00000000000, mantissa: 0b1111111111111111111111111111111111111111111111111111 })
+      expect(_decodeFloat(2.2250738585072014e-308)).toEqual({ exponent: 0b00000000001, mantissa: 0b0000000000000000000000000000000000000000000000000000 })
+      expect(_decodeFloat(Number.MAX_VALUE)).toEqual({ exponent: 0b11111111110, mantissa: 0b1111111111111111111111111111111111111111111111111111 })
+      expect(_decodeFloat(0)).toEqual({ exponent: 0b00000000000, mantissa: 0b0000000000000000000000000000000000000000000000000000 })
+      expect(_decodeFloat(Infinity)).toEqual({ exponent: 0b11111111111, mantissa: 0b0000000000000000000000000000000000000000000000000000 })
+    })
+  })
+
+  describe('_getExactDecimal', () => {
+    it('works', () => {
+      expect(_getExactDecimal(0.1).toFixed()).toBe('0.1000000000000000055511151231257827021181583404541015625')
+      expect(_getExactDecimal(Number.MIN_VALUE).toFixed()).toBe('0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004940656458412465441765687928682213723650598026143247644255856825006755072702087518652998363616359923797965646954457177309266567103559397963987747960107818781263007131903114045278458171678489821036887186360569987307230500063874091535649843873124733972731696151400317153853980741262385655911710266585566867681870395603106249319452715914924553293054565444011274801297099995419319894090804165633245247571478690147267801593552386115501348035264934720193790268107107491703332226844753335720832431936092382893458368060106011506169809753078342277318329247904982524730776375927247874656084778203734469699533647017972677717585125660551199131504891101451037862738167250955837389733598993664809941164205702637090279242767544565229087538682506419718265533447265625')
+      expect(_getExactDecimal(Number.MAX_VALUE).toFixed()).toBe('179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368')
+    })
+  })
+
+  describe('parse', () => {
+    it('throws', () => {
+      expect(() => parse('89', '91')).toThrowError('Expected 1 parameter, received 2')
+      expect(() => parse(89)).toThrowError('Expected value type of "string", received "number"')
+      expect(() => parse('e')).toThrowError('Expected a numeric string, received "e"')
+      expect(() => parse('0.')).toThrowError('Expected a numeric string, received "0."')
+    })
+
+    it('works...?', () => {
+      expect(parse('1')).toBe(1)
+      expect(() => parse('1e999')).toThrowError('Number 1e999 is too large to be precisely represented as a JavaScript number')
+      expect(() => parse('0.1')).toThrowError('Number 0.1 cannot be precisely represented as a JavaScript number; the closest we can get is 0.1000000000000000055511151231257827021181583404541015625')
+      expect(parse('-0.1000000000000000055511151231257827021181583404541015625')).toBe(-0.1000000000000000055511151231257827021181583404541015625)
+      expect(parse('-0')).toBe(-0)
+      expect(parse('NaN')).toBe(NaN)
+      expect(parse('Infinity')).toBe(Infinity)
+      expect(parse('-Infinity')).toBe(-Infinity)
+    })
+
+    it('fails on unrepresentable numeric literals', () => {
+      const strings = [
+        '123.456e-789',
+        '0.4e00669999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999969999999006',
+        '-1e+9999',
+        '1.5e+9999',
+        '123123e100000',
+        '-123123e100000'
+      ]
+
+      strings.forEach(string => {
+        expect(() => parse(string)).toThrowError()
+      })
+    })
+  })
+
+  describe('stringify', () => {
+    it('throws', () => {
+      expect(() => stringify(89, 91)).toThrowError('Expected 1 parameter, received 2')
+      expect(() => stringify('89')).toThrowError('Expected value type of "number", received "string"')
+    })
+
+    it('works normally', () => {
+      expect(stringify(7)).toBe('7')
+      expect(stringify(NaN)).toBe('NaN')
+      expect(stringify(Infinity)).toBe('Infinity')
+      expect(stringify(-Infinity)).toBe('-Infinity')
+    })
+
+    it('handles numbers correctly', () => {
+      expect(stringify(-0)).toBe('-0')
+      expect(stringify(0.1)).toBe('0.1000000000000000055511151231257827021181583404541015625')
+      expect(stringify(90071992547409904)).toBe('90071992547409904')
+    })
+  })
+})

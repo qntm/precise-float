@@ -1,0 +1,37 @@
+{
+  "name": "precise-number",
+  "version": "0.0.0",
+  "description": "Lossless number stringifier and parser",
+  "scripts": {
+    "jest": "jest",
+    "standard": "standard",
+    "test": "npm run standard -- --fix && npm run jest"
+  },
+  "dependencies": {
+    "decimal.js": "^10.0.1"
+  },
+  "devDependencies": {
+    "jest": "^24.8.0",
+    "standard": "^12.0.1"
+  },
+  "author": "qntm",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qntm/precise-number.git"
+  },
+  "keywords": [
+    "digits",
+    "javascript",
+    "precise",
+    "lossless",
+    "decimal",
+    "floating",
+    "point"
+  ],
+  "bugs": {
+    "url": "https://github.com/qntm/precise-number/issues"
+  },
+  "homepage": "https://github.com/qntm/precise-number#readme",
+  "main": "index.js"
+}
