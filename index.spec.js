@@ -7,7 +7,7 @@ const {
   stringify
 } = require('.')
 
-describe('precise-number', () => {
+describe('precise-float', () => {
   describe('_decodeFloat', () => {
     it('extracts 1 correctly', () => {
       expect(_decodeFloat(1)).toEqual({ exponent: 0b01111111111, mantissa: 0b0000000000000000000000000000000000000000000000000000 })

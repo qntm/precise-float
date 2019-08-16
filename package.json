@@ -1,5 +1,5 @@
 {
-  "name": "precise-number",
+  "name": "precise-float",
   "version": "0.0.0",
   "description": "Lossless number stringifier and parser",
   "scripts": {
@@ -18,7 +18,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/qntm/precise-number.git"
+    "url": "git+https://github.com/qntm/precise-float.git"
   },
   "keywords": [
     "digits",
@@ -30,8 +30,8 @@
     "point"
   ],
   "bugs": {
-    "url": "https://github.com/qntm/precise-number/issues"
+    "url": "https://github.com/qntm/precise-float/issues"
   },
-  "homepage": "https://github.com/qntm/precise-number#readme",
+  "homepage": "https://github.com/qntm/precise-float#readme",
   "main": "index.js"
 }
