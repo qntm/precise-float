@@ -1,6 +1,6 @@
 {
   "name": "precise-float",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Lossless number stringifier and parser",
   "scripts": {
     "jest": "jest",
