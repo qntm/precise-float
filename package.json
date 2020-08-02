@@ -1,7 +1,12 @@
 {
   "name": "precise-float",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Lossless number stringifier and parser",
+  "homepage": "https://github.com/qntm/precise-float",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qntm/precise-float.git"
+  },
   "scripts": {
     "jest": "jest",
     "standard": "standard",
@@ -16,10 +21,6 @@
   },
   "author": "qntm",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/qntm/precise-float.git"
-  },
   "keywords": [
     "digits",
     "javascript",
@@ -32,6 +33,5 @@
   "bugs": {
     "url": "https://github.com/qntm/precise-float/issues"
   },
-  "homepage": "https://github.com/qntm/precise-float#readme",
   "main": "index.js"
 }
