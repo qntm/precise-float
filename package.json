@@ -16,7 +16,7 @@
     "decimal.js": "^10.0.1"
   },
   "devDependencies": {
-    "jest": "^26.4.0",
+    "jest": "^27.0.3",
     "standard": "^16.0.1"
   },
   "author": "qntm",
